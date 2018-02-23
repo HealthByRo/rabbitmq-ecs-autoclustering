@@ -1,6 +1,6 @@
 FROM rabbitmq:3-management
 
-RUN apt-get update && apt-get install -y python python-pip python-requests
+RUN apt-get update && apt-get install -y --no-install-recommends python-pip python-requests
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
