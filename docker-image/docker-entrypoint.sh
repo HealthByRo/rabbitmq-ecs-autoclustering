@@ -14,6 +14,8 @@ if [ "${AWS_ASG_AUTOCLUSTER}" == "true" ]; then
 		exit 1
 	fi
 
+export RABBITMQ_USE_LONGNAME
+
 	echo -e " *** AWS_ASG_AUTOCLUSTER enabled ***\n "
 	python /opt/rabbitmq_asg_autocluster.py &
 else

@@ -210,7 +210,7 @@ def join_cluster():
     normal rabbitmq clustering process
     """
 
-    hostname, stderr = run("hostname")
+    hostname, stderr = run("hostname -f")
     my_nodename = "rabbit@" + hostname
     node_list = get_node_list()
 
