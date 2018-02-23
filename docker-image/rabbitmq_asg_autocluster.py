@@ -17,6 +17,7 @@ Requirements:
 from subprocess import Popen, PIPE
 from time import sleep
 import re
+
 try:
     import boto3
 except ImportError:
@@ -24,9 +25,16 @@ except ImportError:
     pip.main(['install', 'boto3'])
     import boto3
 
+try:
+    import requests
+except ImportError:
+    import pip
+    pip.main(['install', 'requests'])
+    import requests
+
 # initialize boto client and ec2 resource
-client_asg = boto3.client('autoscaling', region_name='us-east-1')
-ec2 = boto3.resource('ec2', region_name='us-east-1')
+client_asg = None
+ec2 = None
 
 def run(cmd):
     """
@@ -43,14 +51,21 @@ def run(cmd):
     return stdout, stderr
 
 
+def get_region():
+    """
+    returns the AWS region we're in
+    """
+    response = requests.get('http://169.254.169.254/latest/meta-data/placement/availability-zone')
+
+    return response.text[:-1]
+
 def get_instance_id():
     """
     returns ECS instance id
     """
-    cmd = "curl http://169.254.169.254/latest/meta-data/instance-id"
-    instance_id, stderr = run(cmd)
+    response = requests.get('http://169.254.169.254/latest/meta-data/instance-id')
 
-    return str(instance_id)
+    return response.text
 
 
 def get_asg_name():
@@ -233,6 +248,7 @@ def cleanup():
             print "removing node {} from cluster".format(node)
             run("rabbitmqctl forget_cluster_node {}".format(node))
 
+
 def main():
     """
     main method
@@ -247,9 +263,14 @@ def main():
     # reference: https://www.rabbitmq.com/ha.html
     # i.e. declaring policy "ha-all" that matches all queue names & configures mirroring to all nodes
     # using ${VHOST} environment variable
-    # run('rabbitmqctl set_policy ha-all ".*" \'{"ha-mode":"all"}\' -p ${VHOST}')
+
+    run('rabbitmqctl set_policy ha-all ".*" \'{"ha-mode":"all"}\' -p ${VHOST}')
 
 if __name__ == "__main__":
+    current_region = get_region()
+
+    client_asg = boto3.client('autoscaling', region_name=current_region)
+    ec2 = boto3.resource('ec2', region_name=current_region)
 
     # delay start for the rabbit app to start
     sleep(20)
