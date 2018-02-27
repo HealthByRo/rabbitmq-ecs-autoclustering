@@ -10,3 +10,4 @@ COPY docker-cluster-entrypoint.sh /usr/local/bin/
 COPY rabbitmq-definitions.json /etc/rabbitmq/
 
 ENTRYPOINT ["docker-cluster-entrypoint.sh"]
+CMD ["rabbitmq-server"]
