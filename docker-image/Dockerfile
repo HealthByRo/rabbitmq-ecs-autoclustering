@@ -7,5 +7,6 @@ RUN rabbitmq-plugins --offline enable rabbitmq_peer_discovery_aws \
     && echo "cluster_formation.aws.use_autoscaling_group = true" >> /etc/rabbitmq/rabbitmq.conf
 
 COPY docker-cluster-entrypoint.sh /usr/local/bin/
+COPY rabbitmq-definitions.json /etc/rabbitmq/
 
 ENTRYPOINT ["docker-cluster-entrypoint.sh"]
