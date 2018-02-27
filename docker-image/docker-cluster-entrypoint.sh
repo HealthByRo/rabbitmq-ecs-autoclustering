@@ -6,4 +6,4 @@
 [ -n "$AWS_USE_PRIVATE_IP" ] && echo "cluster_formation.aws.use_private_ip = $AWS_USE_PRIVATE_IP" >> /etc/rabbitmq/rabbitmq.conf
 [ -n "$LOG_LEVEL" ] && echo "log.console.level = $LOG_LEVEL" >> /etc/rabbitmq/rabbitmq.conf
 
-exec docker-entrypoint.sh "$@"
+source /usr/local/bin/docker-entrypoint.sh
