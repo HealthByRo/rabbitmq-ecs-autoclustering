@@ -11,4 +11,6 @@ if [ -n "$AWS_INSTANCE_NAME" ]; then
     echo "cluster_formation.aws.instance_tags.Name = $AWS_INSTANCE_NAME" >> /etc/rabbitmq/rabbitmq.conf
 fi
 
+sed -i -e 's@"vhost": "/"@"vhost": "'"$RABBITMQ_DEFAULT_VHOST"'"@g' /etc/rabbitmq/rabbitmq-definitions.json
+
 source /usr/local/bin/docker-entrypoint.sh
