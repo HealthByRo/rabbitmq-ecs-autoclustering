@@ -8,6 +8,6 @@ if [ -n "$AWS_INSTANCE_NAME" ]; then
     echo "cluster_formation.aws.instance_tags.Name = $AWS_INSTANCE_NAME" >> /etc/rabbitmq/rabbitmq.conf
 fi
 
-jq -n --arg vhost "$RABBITMQ_DEFAULT_VHOST" "$(cat /etc/rabbitmq/rabbitmq-definitions.json.template)" >/etc/rabbitmq/rabbitmq-definitions.json
+jq -n --arg vhost "$RABBITMQ_DEFAULT_VHOST" "$(cat /etc/rabbitmq/rabbitmq-definitions.json.template)" >/etc/rabbitmq/definitions.json
 
 source /usr/local/bin/docker-entrypoint.sh
