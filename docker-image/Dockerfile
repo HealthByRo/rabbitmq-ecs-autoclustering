@@ -1,5 +1,10 @@
 FROM rabbitmq:3-management
 
+RUN apt-get -y update \
+    && apt-get -y install jq \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists
+
 RUN rabbitmq-plugins --offline enable rabbitmq_peer_discovery_aws \
     && echo "management.load_definitions = /etc/rabbitmq/rabbitmq-definitions.json" >> /etc/rabbitmq/rabbitmq.conf \
     && echo "cluster_formation.peer_discovery_backend = rabbit_peer_discovery_aws" >> /etc/rabbitmq/rabbitmq.conf \
