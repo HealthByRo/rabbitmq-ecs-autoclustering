@@ -1,4 +1,5 @@
 {
+    "vhosts": [{"name": $vhost}],
     "policies": [
         { "vhost": $vhost, "name": "ha", "pattern": ".*", "definition": { "ha-mode":"all", "ha-sync-mode":"automatic", "queue-master-locator":"random" }}
     ]
