@@ -13,6 +13,7 @@ RUN rabbitmq-plugins --offline enable rabbitmq_peer_discovery_aws \
 
 COPY docker-cluster-entrypoint.sh /usr/local/bin/
 COPY rabbitmq-definitions.json /etc/rabbitmq/
+COPY rabbitmq-definitions.json.template /etc/rabbitmq/
 
 ENTRYPOINT ["docker-cluster-entrypoint.sh"]
 CMD ["rabbitmq-server"]
