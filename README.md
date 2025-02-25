@@ -1,5 +1,6 @@
-Rabbitmq Auto Clustering in Amazon ECS (EC2 Container Service)
-========================================================
+> **:warning: This fork is not currently maintained and will be archived then removed in the future.**
+
+# Rabbitmq Auto Clustering in Amazon ECS (EC2 Container Service)
 
 **most of the information below does not apply to this repo, since it has been rewritten completely to use the peer discovery capabilities of rabbitmq 3.7**
 
@@ -10,16 +11,15 @@ Automation of Rabbitmq clustering in Amazon EC2 Container Service based on AWS A
 - the rabbitmq cluster is deployed within a single AWS Auto Scaling group
 - only run one rabbitmq container per ECS instance and deploy odd numbers of rabbitmq instances i.e. 3, 5, 7, etc [More On Rabbitmq Clustering](https://www.rabbitmq.com/clustering.html)
 - use the 'host' docker networking mode when running the containers to cause them to inherit the private short dns names of the ECS instances as their hostnames; this way rabbitmq
-uses these DNS names for node discovery during the clustering process
+  uses these DNS names for node discovery during the clustering process
 - the ECS instances must be assigned the following IAM policies:
-"autoscaling:DescribeAutoScalingInstances",
-"autoscaling:DescribeAutoScalingGroups",
-"ec2:DescribeInstances"
+  "autoscaling:DescribeAutoScalingInstances",
+  "autoscaling:DescribeAutoScalingGroups",
+  "ec2:DescribeInstances"
 - set environment variable AWS_ASG_AUTOCLUSTER="true" when starting the container
 
+## Deployment
 
-Deployment
-----------
 Below are some main steps for building and deploying these auto clustering rabbitmq docker images in ECS; adjust as you see fit.
 
 - IAM Policy for ECS Instances
@@ -51,7 +51,6 @@ Make sure the IAM policy for the ECS instances include these: "autoscaling:Descr
       Roles: [!Ref 'InstanceRole']
 ```
 
-
 - Build & push the docker image to the ECR registry.
 
 ```
@@ -61,9 +60,10 @@ Make sure the IAM policy for the ECS instances include these: "autoscaling:Descr
     docker tag arnaud/rabbitmq-asg-autocluster:latest ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/arnaud/rabbitmq-asg-autocluster:latest
 
 ```
+
 - Deploy the containers in ECS
 
-Here are sample AWS ECS Task & Sevice definitions in YAML syntax for running these containers. Modify as necessary and set relevant values for any of the AWS Cloudformation Parameters - i.e. QueueUser, QueuePass, etc. 
+Here are sample AWS ECS Task & Sevice definitions in YAML syntax for running these containers. Modify as necessary and set relevant values for any of the AWS Cloudformation Parameters - i.e. QueueUser, QueuePass, etc.
 
 ```
   TaskDefinition:
@@ -75,7 +75,7 @@ Here are sample AWS ECS Task & Sevice definitions in YAML syntax for running the
       - Host:
           SourcePath: /var/lib/rabbitmq-asg-autocluster
         Name: rabbitmq-database
-      # important for rabbit node discovery as containers inherit the host's hostname that is in DNS 
+      # important for rabbit node discovery as containers inherit the host's hostname that is in DNS
       NetworkMode: 'host'
       ContainerDefinitions:
       - Name: rabbit
@@ -118,7 +118,7 @@ Here are sample AWS ECS Task & Sevice definitions in YAML syntax for running the
         - Name: RABBITMQ_ERLANG_COOKIE
           Value: 'ALWEDHDBZTQYWTJGTXWV'
         - Name: RABBITMQ_QUEUE_MASTER_LOCATOR
-          Value: min-masters       
+          Value: min-masters
         LogConfiguration:
           LogDriver: awslogs
           Options:
